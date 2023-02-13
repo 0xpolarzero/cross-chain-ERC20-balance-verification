@@ -1,0 +1,6 @@
+exports.setOcrConfig = require("./setOcrConfig.js")
+exports.setBillingConfig = require("./setBillingConfig.js")
+exports.manageAllowlist = require("./manageAllowlist.js")
+exports.setDonKey = require("./setDONKey")
+exports.deployFullOracle = require("./deployFullOracle.js")
+exports.setNodeKey = require("./setNodeKey.js")
