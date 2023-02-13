@@ -4,7 +4,9 @@ pragma solidity ^0.8.7;
 import "./dev/functions/FunctionsClient.sol";
 // import "@chainlink/contracts/src/v0.8/dev/functions/FunctionsClient.sol"; // Once published
 import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
+
 import "hardhat/console.sol";
+import "./Utils.sol";
 
 /**
  * @title Functions Copns contract
@@ -14,10 +16,15 @@ import "hardhat/console.sol";
 contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
   using Functions for Functions.Request;
 
+  error MISSING_ARGS();
+  error UNAUTHORIZED(string message);
+
   bytes32 public latestRequestId;
   bytes public latestResponse;
   bytes public latestError;
 
+  // The required balance to be verified for the token
+  uint256 public requiredBalance;
   // Is the balance of the user across chains enough to be verified?
   mapping(address => bool) public sufficientBalance;
 
@@ -28,7 +35,10 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
    *
    * @param oracle - The FunctionsOracle contract
    */
-  constructor(address oracle) FunctionsClient(oracle) ConfirmedOwner(msg.sender) {}
+  constructor(address oracle) FunctionsClient(oracle) ConfirmedOwner(msg.sender) {
+    // Set the required balance for each token
+    requiredBalance = 10_000_000_000_000_000_000; // 10 LINK
+  }
 
   /**
    * @notice Send a simple request
@@ -54,10 +64,14 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
         req.addRemoteSecrets(secrets);
       }
     }
-    if (args.length > 0) req.addArgs(args);
+
+    // Revert if all arguments are not provided
+    if (args.length < 3) revert MISSING_ARGS();
+    req.addArgs(args);
 
     bytes32 assignedReqID = sendRequest(req, subscriptionId, gasLimit, tx.gasprice);
     latestRequestId = assignedReqID;
+
     return assignedReqID;
   }
 
@@ -73,23 +87,38 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
     // revert('test');
     latestResponse = response;
     latestError = err;
-    console.logBytes(response);
+
+    // Now we got userAddress + balance
+    // We need to split it into two parts and convert to the right type
+    (address userAddress, uint256 userBalance) = Utils.retrieveData(response);
+
+    // Check if the balance is sufficient
+    sufficientBalance[userAddress] = userBalance >= requiredBalance;
+
     emit OCRResponse(requestId, response, err);
   }
 
   /**
-   * @notice Any function that would be executed only if the issuer of the request
-   * was verified during the request execution
+   * @notice Any function that can be executed only if the called has a sufficient balance
    */
-  function executeAuthorizedFunction() internal {
+  function executeAuthorizedFunction() external {
+    if (!sufficientBalance[msg.sender]) revert UNAUTHORIZED("Not enough balance to execute this function");
+
     // ...
   }
 
-  function updateOracleAddress(address oracle) public onlyOwner {
-    setOracle(oracle);
+  /**
+   * @notice Update the required balance for the token
+   */
+  function updateRequiredBalance(uint256 _newBalance) external onlyOwner {
+    requiredBalance = _newBalance;
   }
 
-  function addSimulatedRequestId(address oracleAddress, bytes32 requestId) public onlyOwner {
-    addExternalRequest(oracleAddress, requestId);
+  function updateOracleAddress(address _oracle) public onlyOwner {
+    setOracle(_oracle);
+  }
+
+  function addSimulatedRequestId(address _oracleAddress, bytes32 _requestId) public onlyOwner {
+    addExternalRequest(_oracleAddress, _requestId);
   }
 }

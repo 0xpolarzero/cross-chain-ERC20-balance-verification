@@ -3,7 +3,7 @@ const fs = require("fs")
 // Loads environment variables from .env file (if it exists)
 require("dotenv").config()
 
-const { USER_ADDRESS, CHAINS, chainsToString } = require("./implementation/helper-config")
+const { getUserAddress, getTokenAddresses, getRpcUrls, getSymbol } = require("./implementation/helper-config")
 
 const Location = {
   Inline: 0,
@@ -36,14 +36,13 @@ const requestConfig = {
   source: fs.readFileSync("./implementation/verify-balances.js").toString(),
   //source: fs.readFileSync('./API-request-example.js').toString(),
   // secrets can be accessed within the source code with `secrets.varName` (ie: secrets.apiKey)
-  secrets: { apiKey: process.env.API_KEY },
+  secrets: getRpcUrls(),
   // ETH wallet key used to sign secrets so they cannot be accessed by a 3rd party
   walletPrivateKey: process.env["PRIVATE_KEY"],
   // args (string only array) can be accessed within the source code with `args[index]` (ie: args[0]).
-  // ! The address to check balance of, and the chains to check
-  args: [USER_ADDRESS, chainsToString(CHAINS)],
+  args: [getUserAddress(), getTokenAddresses(), getSymbol()],
   // expected type of the returned value
-  expectedReturnType: ReturnType.uint256,
+  expectedReturnType: ReturnType.string,
   // Redundant URLs which point to encrypted off-chain secrets
   secretsURLs: [],
   // Default offchain secrets object used by the `functions-build-offchain-secrets` command
