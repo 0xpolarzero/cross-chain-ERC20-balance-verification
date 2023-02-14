@@ -1,14 +1,20 @@
 /**
- * @notice Constants that can be modified to configure the request
+ * @notice Constants that are used for the request
+ * @dev Modify these variables to customize the request
+ * @param USER_ADDRESS {string} The address to check balance of
+ * @param CHAINS {Array} The chains to check their balances
+ * @param SYMBOL {string} Symbol of the token - it will be used in the contract
+ * to get the balance required for verification for that token
  */
 
 // The address to check balance of
 const USER_ADDRESS = "0xc06d127E504a944f63Bc750D8F512556c576F3EF"
 
 // The chains to check their balances
-// chainId: the chain id
-// tokenAddress: the address of the token to check (LINK)
-// rpcUrl: the RPC URL for the chain
+// name: the name of the chain, for identification purposes
+// chainId: the chain id, for identification purposes as well
+// tokenAddress: the address of the token to check on that chain
+// rpcUrl: the RPC URL
 const CHAINS = [
   // Goerli
   {
@@ -40,11 +46,9 @@ const CHAINS = [
   },
 ]
 
-// Symbol of the token (LINK)
-const SYMBOL = "LINK"
-
 /**
  * @notice Getters for the configuration
+ * @dev Do not modify these functions
  */
 
 const getUserAddress = () => USER_ADDRESS
@@ -61,12 +65,8 @@ const getRpcUrls = () => {
   return CHAINS.reduce((rpcUrls, chain) => ({ ...rpcUrls, [chain.name]: chain.rpcUrl }), {})
 }
 
-// Get the symbol of the token
-const getSymbol = () => SYMBOL.toString()
-
 module.exports = {
   getUserAddress,
   getTokenAddresses,
   getRpcUrls,
-  getSymbol,
 }
