@@ -3,7 +3,7 @@ const fs = require("fs")
 // Loads environment variables from .env file (if it exists)
 require("dotenv").config()
 
-const { getUserAddress, getTokenAddresses, getRpcUrls, getSymbol } = require("./implementation/helper-config")
+const { getUserAddress, getTokenAddresses, getRpcUrls } = require("./implementation/helper-config")
 
 const Location = {
   Inline: 0,
@@ -40,7 +40,7 @@ const requestConfig = {
   // ETH wallet key used to sign secrets so they cannot be accessed by a 3rd party
   walletPrivateKey: process.env["PRIVATE_KEY"],
   // args (string only array) can be accessed within the source code with `args[index]` (ie: args[0]).
-  args: [getUserAddress(), getTokenAddresses(), getSymbol()],
+  args: [getUserAddress(), getTokenAddresses()],
   // expected type of the returned value
   expectedReturnType: ReturnType.uint256,
   // Redundant URLs which point to encrypted off-chain secrets
