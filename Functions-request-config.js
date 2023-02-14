@@ -42,7 +42,7 @@ const requestConfig = {
   // args (string only array) can be accessed within the source code with `args[index]` (ie: args[0]).
   args: [getUserAddress(), getTokenAddresses(), getSymbol()],
   // expected type of the returned value
-  expectedReturnType: ReturnType.string,
+  expectedReturnType: ReturnType.uint256,
   // Redundant URLs which point to encrypted off-chain secrets
   secretsURLs: [],
   // Default offchain secrets object used by the `functions-build-offchain-secrets` command

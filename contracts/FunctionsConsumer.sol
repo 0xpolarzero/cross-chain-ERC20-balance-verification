@@ -27,6 +27,8 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
   uint256 public requiredBalance;
   // Is the balance of the user across chains enough to be verified?
   mapping(address => bool) public sufficientBalance;
+  // Remember the user address for each request ID
+  mapping(bytes32 => address) public rememberAddress;
 
   event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
 
@@ -72,6 +74,14 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
     bytes32 assignedReqID = sendRequest(req, subscriptionId, gasLimit, tx.gasprice);
     latestRequestId = assignedReqID;
 
+    // Asociate the request ID with the user address, so we can retrieve it when fulfilling
+    // the request
+    // We could also retrieve it from the response when fulfilling, but it would require
+    // splitting the response into two parts and converting them to the right type
+    // which would be more expensive
+    address userAddress = Utils.stringToAddress(args[0]);
+    rememberAddress[assignedReqID] = userAddress;
+
     return assignedReqID;
   }
 
@@ -88,9 +98,11 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
     latestResponse = response;
     latestError = err;
 
-    // Now we got userAddress + balance
-    // We need to split it into two parts and convert to the right type
-    (address userAddress, uint256 userBalance) = Utils.retrieveData(response);
+    // Retrieve the user balance
+    uint256 userBalance = abi.decode(response, (uint256));
+    // Retrieve the user address for this request
+    // ! It won't work when simulating the request as the requestId will be 0x00...01
+    address userAddress = rememberAddress[requestId];
 
     // Check if the balance is sufficient
     sufficientBalance[userAddress] = userBalance >= requiredBalance;
