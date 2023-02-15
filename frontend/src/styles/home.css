@@ -1,6 +1,7 @@
 .container {
   display: grid;
   grid-template-rows: auto 1fr auto;
+  justify-content: center;
   min-height: 100vh;
 }
 
@@ -41,12 +42,21 @@ main .title {
 main > div {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: 1rem;
 }
 
 main > div p {
   margin: 0.5rem 0;
+  text-align: justify;
+}
+
+/**
+  * Interact
+  */
+.interact-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 /**

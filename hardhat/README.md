@@ -17,7 +17,7 @@ git clone git@github.com:polar0/cross-chain-ERC20-balance-verification.git
 2. Install dependencies
 
 ```bash
-cd cross-chain-ERC20-balance-verification
+cd cross-chain-ERC20-balance-verification/hardhat
 yarn
 ```
 

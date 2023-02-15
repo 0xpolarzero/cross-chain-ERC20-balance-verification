@@ -8,8 +8,8 @@ const { ethers } = require("ethers")
  * @dev These can be customized with your own values
  */
 const config = {
-  contractAddress: "0x20E95eBC78F948A8b730964aa36AEACde8c2b284",
-  subId: 91,
+  contractAddress: "0xE60145ff461c2FA9Cc8fF0C9e04d360Bb7349A16",
+  subId: 92,
   network: { name: "mumbai" },
   gasLimit: 100_000,
 }
