@@ -85,3 +85,32 @@ yarn hardhat functions-sub-create --network network_name_here --amount LINK_fund
 ```bash
 yarn hardhat functions-request --network network_name_here --contract 0xDeployed_client_contract_address_here --subid subscription_id_number_here
 ```
+
+## Steps to run in a non-hardhat environment (e.g. frontend)
+
+See `implementation/standalone/request-standalone` for an example.
+
+1. Copy the `tasks/Functions-client/request.js` file to a new folder
+
+2. Replace the hardhat task format to a regular async function
+
+   - Remove the `task` function call
+   - Replace the `taskArgs` with variables (`contractAddress`, `subscriptionId`, `network`, `gasLimit`)
+
+3. Remove console confirmations & simulations
+
+4. Import the `requestConfig` directly from the root `Functions-request-config.js` instead of building it
+
+### Test that standalone function
+
+1. Follow the deployment & funding steps above, up to executing a request.
+
+2. Fill in the variables in the `implementation/standalone/helper-config-standalone.js` file, for the `config` object (`contractAddress`, `subId`, `network`).
+
+3. Run the standalone function
+
+It will perform the same as the hardhat task, but without the hardhat environment. IT also ignores the console confirmations, simulation & gas estimation.
+
+```bash
+node implementation/standalone/request-standalone.js
+```
