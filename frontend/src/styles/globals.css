@@ -71,11 +71,13 @@ h1 {
 
 ol {
   margin: 0;
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 0;
+  width: 100%;
 }
 
 li {
-  margin: 0.5rem 0;
+  margin: 0.5rem 0 0.5rem 2rem;
+  text-align: justify;
 }
 
 /* 
@@ -86,15 +88,16 @@ span.button-primary button,
 .controls,
 input {
   background-color: var(--background-button);
-  color: inherit !important; /* override RainbowKit */
-  border-radius: 8px !important; /* override RainbowKit */
-  font-family: inherit !important; /* override RainbowKit */
   font-size: 1em;
   font-weight: 500;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   cursor: pointer;
   transition: all 0.25s ease;
+}
+button > span,
+input {
+  font-family: var(--font-main); /* Antd */
 }
 /* Hover */
 button.button-primary:hover,
@@ -213,6 +216,20 @@ a.emphasize.min:hover {
   height: 2px;
   background: var(--text-link);
   margin-top: 0.2em;
+}
+
+.step {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.step::after {
+  content: '. ';
+  font-size: 1rem;
+}
+
+.justify {
+  text-align: justify;
 }
 
 /* 
