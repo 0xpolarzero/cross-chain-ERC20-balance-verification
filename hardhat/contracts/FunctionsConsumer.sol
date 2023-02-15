@@ -23,8 +23,6 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
   bytes public latestResponse;
   bytes public latestError;
 
-  // All authorized users
-  address[] private authorizedUsers;
   // The required balance to be verified for the token
   uint256 private requiredBalance;
   // The number that can be updated only if authorized
@@ -124,19 +122,15 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
     // Check if the balance is sufficient
     // If a user was previously authorized, but runs the request again without the required balance,
     // their authorization won't be removed
-    if (userBalance >= requiredBalance) {
-      // Add the user to the list of authorized users
-      authorizedUsers.push(userAddress);
-      // Authorize the user to use the function
-      sufficientBalance[userAddress] = true;
-    }
+    // Authorize the user to use the function
+    if (userBalance >= requiredBalance) authorizeUser(userAddress);
 
     emit OCRResponse(requestId, response, err);
   }
 
   /**
    * @notice Any function that can be executed only if the called has a sufficient balance
-   * @param _num The new number to assign
+   * @param _num {uint256} The number to update
    */
   function executeAuthorizedFunction(uint256 _num) external onlyAuthorized {
     currentNumber = _num;
@@ -144,6 +138,14 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
 
     // This function could also call another contract with a specified function signature
     // and arguments, e.g. from a frontend, therefore being a verifier and gateway to that other contract
+  }
+
+  /**
+   * @notice Add a user to the list of authorized users (both in the mapping and array)
+   * @param _user {address} The user to add to the list of authorized users
+   */
+  function authorizeUser(address _user) internal {
+    sufficientBalance[_user] = true;
   }
 
   /**
@@ -159,13 +161,6 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
 
   function addSimulatedRequestId(address _oracleAddress, bytes32 _requestId) public onlyOwner {
     addExternalRequest(_oracleAddress, _requestId);
-  }
-
-  /**
-   * @notice Get the list of authorized users
-   */
-  function getAuthorizedUsers() external view returns (address[] memory) {
-    return authorizedUsers;
   }
 
   /**
