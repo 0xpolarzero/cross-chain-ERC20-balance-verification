@@ -98,7 +98,7 @@ const request = async (userAddress) => {
   // Use a promise to wait & listen for the fulfillment event before returning
   return await new Promise(async (resolve, reject) => {
     let requestId;
-    let returned = { result: null, cost: null };
+    let returned = { result: null, cost: null, error: false };
 
     // Initiate the listeners before making the request
     // Listen for fulfillment errors
@@ -108,7 +108,7 @@ const request = async (userAddress) => {
         console.log(msg);
 
         killListeners();
-        return reject(msg);
+        return reject({ result: msg, error: true });
       }
     });
     oracle.once('UserCallbackRawError', async (eventRequestId, msg) => {
@@ -117,7 +117,7 @@ const request = async (userAddress) => {
         console.log(Buffer.from(msg, 'hex').toString());
 
         killListeners();
-        return reject(msg);
+        return reject({ result: msg, error: true });
       }
     });
     // Listen for successful fulfillment
@@ -131,7 +131,7 @@ const request = async (userAddress) => {
 
       console.log(`Request ${requestId} fulfilled!`);
       if (result !== '0x') {
-        const decodedOutput = BigInt('0x' + successResult.slice(2).slice(-64));
+        const decodedOutput = BigInt('0x' + result.slice(2).slice(-64));
         console.log(`Balance returned to client contract: ${decodedOutput}`);
 
         returned.result = decodedOutput;
@@ -203,6 +203,7 @@ const request = async (userAddress) => {
     console.log(
       `\nRequesting new data for FunctionsConsumer contract ${contractAddress} on network ${network.name}`,
     );
+
     const requestTx = await clientContract.executeRequest(
       request.source,
       request.secrets ?? [],
@@ -212,12 +213,15 @@ const request = async (userAddress) => {
       gasLimit,
       overrides,
     );
+
     // If a response is not received within 5 minutes, the request has failed
     setTimeout(() => {
       killListeners();
-      return reject(
-        'A response not received within 5 minutes of the request being initiated and has been canceled. Your subscription was not charged. Please make a new request.',
-      );
+      return reject({
+        result:
+          'A response not received within 5 minutes of the request being initiated and has been canceled. Your subscription was not charged. Please make a new request.',
+        error: true,
+      });
     }, 300_000);
     console.log(
       `Waiting ${VERIFICATION_BLOCK_CONFIRMATIONS} blocks for transaction ${requestTx.hash} to be confirmed...`,
