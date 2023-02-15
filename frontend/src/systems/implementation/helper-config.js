@@ -3,6 +3,12 @@ const functionsConsumerAbi = require('../abi/FunctionsConsumer.json');
 const functionsOracleAbi = require('../abi/FunctionsOracle.json');
 const functionsBillingRegistryAbi = require('../abi/FunctionsBillingRegistry.json');
 
+const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+const GOERLI_RPC_URL = `https://eth-goerli.g.alchemy.com/v2/${alchemyId}`;
+const MUMBAI_RPC_URL = `https://polygon-mumbai.g.alchemy.com/v2/${alchemyId}`;
+const ARBITRUM_GOERLI_RPC_URL = `https://arb-goerli.g.alchemy.com/v2/${alchemyId}`;
+const OPTIMISM_GOERLI_RPC_URL = `https://opt-goerli.g.alchemy.com/v2/${alchemyId}`;
+
 /**
  * @notice Constants that are used for the request
  * @dev Modify these variables to customize the request
@@ -22,29 +28,33 @@ const CHAINS = [
   {
     chainId: 5,
     name: 'goerli',
+    fullName: 'Goerli',
     tokenAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
-    rpcUrl: process.env.GOERLI_RPC_URL || '',
+    rpcUrl: GOERLI_RPC_URL || '',
   },
   // Mumbai
   {
     chainId: 80001,
     name: 'mumbai',
+    fullName: 'Mumbai',
     tokenAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
-    rpcUrl: process.env.MUMBAI_RPC_URL || '',
+    rpcUrl: MUMBAI_RPC_URL || '',
   },
   // Arbitrum Goerli
   {
     chainId: 421613,
     name: 'arbitrumGoerli',
+    fullName: 'Arbitrum Goerli',
     tokenAddress: '0xd14838A68E8AFBAdE5efb411d5871ea0011AFd28',
-    rpcUrl: process.env.ARBITRUM_GOERLI_RPC_URL || '',
+    rpcUrl: ARBITRUM_GOERLI_RPC_URL || '',
   },
   // Optimism Goerli
   {
     chainId: 420,
     name: 'optimismGoerli',
+    fullName: 'Optimism Goerli',
     tokenAddress: '0xdc2CC710e42857672E7907CF474a69B63B93089f',
-    rpcUrl: process.env.OPTIMISM_GOERLI_RPC_URL || '',
+    rpcUrl: OPTIMISM_GOERLI_RPC_URL || '',
   },
 ];
 
@@ -53,10 +63,17 @@ const CHAINS = [
  * @dev These can be customized with your own values
  */
 const config = {
-  contractAddress: '0xE60145ff461c2FA9Cc8fF0C9e04d360Bb7349A16',
-  subId: 92,
+  contractAddress: '0x3700813aA6956BA06f5DEe33a0d9Eade89B9C18a',
+  // contractAddress: '0x2c197d3DA36C101D70D1086A70E47EA901a922bB',
+  subId: 96,
+  // subId: 99,
   network: { name: 'mumbai' },
   gasLimit: 100_000,
+
+  // Token
+  tokenName: 'LINK',
+  tokenSymbol: 'LINK',
+  tokenDecimals: 18,
 };
 
 /**
@@ -79,14 +96,18 @@ const getRpcUrls = () => {
   );
 };
 
+const getChainsNames = () => {
+  return CHAINS.map((chain) => chain.fullName);
+};
+
 /**
  * @notice The ABIs should be retrieved to grab the contract in the request,
  * since we're not using hardhat anymore
  */
 const abi = {
-  functionsConsumerAbi: functionsConsumerAbi.abi,
-  functionsOracleAbi: functionsOracleAbi.abi,
-  functionsBillingRegistryAbi: functionsBillingRegistryAbi.abi,
+  functionsConsumerAbi,
+  functionsOracleAbi,
+  functionsBillingRegistryAbi,
 };
 
 /**
@@ -112,6 +133,7 @@ module.exports = {
   config,
   getTokenAddresses,
   getRpcUrls,
+  getChainsNames,
   abi,
   configProvider,
 };
