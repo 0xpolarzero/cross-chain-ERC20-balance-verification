@@ -23,14 +23,32 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
   bytes public latestResponse;
   bytes public latestError;
 
+  // All authorized users
+  address[] private authorizedUsers;
   // The required balance to be verified for the token
-  uint256 public requiredBalance;
+  uint256 private requiredBalance;
+  // The number that can be updated only if authorized
+  uint256 private currentNumber;
+
   // Is the balance of the user across chains enough to be verified?
-  mapping(address => bool) public sufficientBalance;
+  mapping(address => bool) private sufficientBalance;
   // Remember the user address for each request ID
-  mapping(bytes32 => address) public rememberAddress;
+  mapping(bytes32 => address) private rememberAddress;
 
   event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
+  event NumberUpdated(uint256 num);
+
+  /**
+   * @notice Modifier that checks if the caller was previously authorized
+   * @dev A user can be authorized by running the request with a sufficient balance
+   * across the chains specified in the request
+   * In this current example, the user will stay authorized even if they run the request or the
+   * authorized function again with a lower balance
+   */
+  modifier onlyAuthorized() {
+    if (!sufficientBalance[msg.sender]) revert UNAUTHORIZED("Not enough balance to execute this function");
+    _;
+  }
 
   /**
    * @notice Executes once when a contract is created to initialize state variables
@@ -104,18 +122,28 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
     address userAddress = rememberAddress[requestId];
 
     // Check if the balance is sufficient
-    sufficientBalance[userAddress] = userBalance >= requiredBalance;
+    // If a user was previously authorized, but runs the request again without the required balance,
+    // their authorization won't be removed
+    if (userBalance >= requiredBalance) {
+      // Add the user to the list of authorized users
+      authorizedUsers.push(userAddress);
+      // Authorize the user to use the function
+      sufficientBalance[userAddress] = true;
+    }
 
     emit OCRResponse(requestId, response, err);
   }
 
   /**
    * @notice Any function that can be executed only if the called has a sufficient balance
+   * @param _num The new number to assign
    */
-  function executeAuthorizedFunction() external {
-    if (!sufficientBalance[msg.sender]) revert UNAUTHORIZED("Not enough balance to execute this function");
+  function executeAuthorizedFunction(uint256 _num) external onlyAuthorized {
+    currentNumber = _num;
+    emit NumberUpdated(_num);
 
-    // ...
+    // This function could also call another contract with a specified function signature
+    // and arguments, e.g. from a frontend, therefore being a verifier and gateway to that other contract
   }
 
   /**
@@ -131,5 +159,33 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
 
   function addSimulatedRequestId(address _oracleAddress, bytes32 _requestId) public onlyOwner {
     addExternalRequest(_oracleAddress, _requestId);
+  }
+
+  /**
+   * @notice Get the list of authorized users
+   */
+  function getAuthorizedUsers() external view returns (address[] memory) {
+    return authorizedUsers;
+  }
+
+  /**
+   * @notice Get the authorization status of a user
+   */
+  function getAuthorizationStatus(address _user) external view returns (bool) {
+    return sufficientBalance[_user];
+  }
+
+  /**
+   * @notice Get the required balance for the token
+   */
+  function getRequiredBalance() external view returns (uint256) {
+    return requiredBalance;
+  }
+
+  /**
+   * @notice Get the current number
+   */
+  function getCurrentNumber() external view returns (uint256) {
+    return currentNumber;
   }
 }
