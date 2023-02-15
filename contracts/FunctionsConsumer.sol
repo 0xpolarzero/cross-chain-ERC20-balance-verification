@@ -68,7 +68,7 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
     }
 
     // Revert if all arguments are not provided
-    if (args.length < 3) revert MISSING_ARGS();
+    if (args.length < 2) revert MISSING_ARGS();
     req.addArgs(args);
 
     bytes32 assignedReqID = sendRequest(req, subscriptionId, gasLimit, tx.gasprice);
@@ -87,7 +87,6 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
 
   /**
    * @notice Callback that is invoked once the DON has resolved the request or hit an error
-   *
    * @param requestId The request ID, returned by sendRequest()
    * @param response Aggregated response from the user code
    * @param err Aggregated error from the user code or from the execution pipeline
