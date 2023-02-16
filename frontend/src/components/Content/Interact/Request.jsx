@@ -98,7 +98,7 @@ const Request = ({
       <Button
         type='primary'
         onClick={executeRequest}
-        // disabled={isAuthorized}
+        disabled={isAuthorized}
         loading={isRequesting}
       >
         Request authorization
