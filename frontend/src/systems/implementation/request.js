@@ -17,7 +17,7 @@ const { getSigner } = configProvider();
 // Get requestConfig directly without simulation
 const getRequestConfig = require('../Functions-request-config.js');
 
-const request = async (userAddress) => {
+const request = async (userAddress, updateToast) => {
   const requestConfig = getRequestConfig(userAddress);
 
   // A manual gas limit is required as the gas limit estimated by Ethers is not always accurate
@@ -203,6 +203,7 @@ const request = async (userAddress) => {
     console.log(
       `\nRequesting new data for FunctionsConsumer contract ${contractAddress} on network ${network.name}`,
     );
+    updateToast('Initiating request...');
 
     const requestTx = await clientContract.executeRequest(
       request.source,
@@ -226,6 +227,9 @@ const request = async (userAddress) => {
     console.log(
       `Waiting ${VERIFICATION_BLOCK_CONFIRMATIONS} blocks for transaction ${requestTx.hash} to be confirmed...`,
     );
+    updateToast(
+      `Waiting ${VERIFICATION_BLOCK_CONFIRMATIONS} blocks for the request transaction to be confirmed...`,
+    );
 
     const requestTxReceipt = await requestTx.wait(
       VERIFICATION_BLOCK_CONFIRMATIONS,
@@ -233,6 +237,7 @@ const request = async (userAddress) => {
     requestId = requestTxReceipt.events[2].args.id;
     console.log(`\nRequest ${requestId} initiated`);
     console.log(`Waiting for fulfillment...\n`);
+    updateToast(`Request initiated. Waiting for fulfillment...`);
   });
 };
 

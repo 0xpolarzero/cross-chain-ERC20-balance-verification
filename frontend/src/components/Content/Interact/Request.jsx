@@ -14,12 +14,23 @@ const Request = ({
   const [isRequesting, setIsRequesting] = useState(false);
   const toastId = useRef(null);
 
+  const updateToast = (message) => {
+    // Keep it loading but update the message
+    if (toastId.current)
+      toast.update(toastId.current, {
+        render: message,
+        type: 'loading',
+        isLoading: true,
+        autoClose: false,
+      });
+  };
+
   const executeRequest = async () => {
     setIsRequesting(true);
     toastId.current = toast.loading('Requesting authorization...');
 
     try {
-      const res = await requestAuthorization(address, toastId.current);
+      const res = await requestAuthorization(address, updateToast);
       if (res.error) {
         toast.update(toastId.current, {
           render: 'Authorization request failed.',
@@ -34,23 +45,27 @@ const Request = ({
           isLoading: false,
           autoClose: 5000,
         });
-
-        const balance =
-          Number(res.result.toString()) /
-            10 ** requestConfig.config.tokenDecimals || 0;
-        const totalCost = res.cost || 0;
+        const balance = (
+          <Rounded
+            amount={res.result.toString()}
+            decimals={requestConfig.config.tokenDecimals}
+            symbol={requestConfig.config.tokenSymbol}
+          />
+        );
+        const totalCost = (
+          <Rounded
+            amount={res.cost}
+            decimals={null}
+            symbol={requestConfig.config.tokenSymbol}
+          />
+        );
 
         toast.info(
           <>
             Balance found across all chains:{' '}
-            <span className='emphasize'>
-              {balance} {requestConfig.config.tokenSymbol}
-            </span>
+            <span className='emphasize'>{balance}</span>
             <br />
-            Cost of the request:{' '}
-            <span className='emphasize'>
-              {totalCost} {requestConfig.config.tokenSymbol}
-            </span>
+            Cost of the request: <span className='emphasize'>{totalCost}</span>
           </>,
         );
       }
@@ -64,6 +79,7 @@ const Request = ({
       });
     } finally {
       setIsRequesting(false);
+      toastId.current = null;
       checkAuthorization();
     }
   };
@@ -72,9 +88,10 @@ const Request = ({
     <div className='action request'>
       <div className='justify'>
         <span className='step emphasize'>1</span>In order to pass the
-        authorization, you need to hold at least a total balance of{' '}
+        authorization, you need to hold at least a{' '}
         <b>
-          {requiredBalance} {requestConfig.config.tokenSymbol}
+          combined balance of {requiredBalance}{' '}
+          {requestConfig.config.tokenSymbol}
         </b>{' '}
         on the following chains: <b>{requestedChains}</b>.
       </div>
@@ -90,7 +107,15 @@ const Request = ({
   );
 };
 
-export default Request;
+const Rounded = ({ amount, decimals, symbol }) => {
+  const formatted = decimals ? Number(amount) / 10 ** decimals : Number(amount);
+  const rounded = Number(formatted.toFixed(4));
 
-// ! Component to round link
-// ! Put updateToast function inside request arguments (with address) to just update with the message
+  return (
+    <span className='emphasize'>
+      {rounded} {symbol}
+    </span>
+  );
+};
+
+export default Request;
