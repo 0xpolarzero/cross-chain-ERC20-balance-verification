@@ -40,12 +40,11 @@ const Interact = () => {
 
   useEffect(() => {
     getRequiredBalance();
-    checkAuthorization();
   }, []);
 
   useEffect(() => {
     setIsConnected(!!address);
-    checkAuthorization();
+    if (isConnected) checkAuthorization();
   }, [address]);
 
   return (
