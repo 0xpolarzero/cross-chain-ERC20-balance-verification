@@ -1,34 +1,18 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
-exports.getRequestConfig =
-  exports.buildRequest =
-  exports.getDecodedResultLog /* = exports.simulateRequest */ =
-    void 0;
-// Can't use it here
-// var simulateRequest_1 = require('./simulateRequest');
-// Object.defineProperty(exports, 'simulateRequest', {
-//   enumerable: true,
-//   get: function () {
-//     return simulateRequest_1.simulateRequest;
-//   },
-// });
-// Object.defineProperty(exports, 'getDecodedResultLog', {
-//   enumerable: true,
-//   get: function () {
-//     return simulateRequest_1.getDecodedResultLog;
-//   },
-// });
-var buildRequest_1 = require('./buildRequest');
-Object.defineProperty(exports, 'buildRequest', {
+"use strict"
+// Removed simulateRequest and getDecodedResultLog
+Object.defineProperty(exports, "__esModule", { value: true })
+exports.getRequestConfig = exports.buildRequest = void 0
+var buildRequest_1 = require("./buildRequest")
+Object.defineProperty(exports, "buildRequest", {
   enumerable: true,
   get: function () {
-    return buildRequest_1.buildRequest;
+    return buildRequest_1.buildRequest
   },
-});
-var getRequestConfig_1 = require('./getRequestConfig');
-Object.defineProperty(exports, 'getRequestConfig', {
+})
+var getRequestConfig_1 = require("./getRequestConfig")
+Object.defineProperty(exports, "getRequestConfig", {
   enumerable: true,
   get: function () {
-    return getRequestConfig_1.getRequestConfig;
+    return getRequestConfig_1.getRequestConfig
   },
-});
+})

@@ -1,12 +1,12 @@
 [
   {
     "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    "name": "AlreadySet",
+    "type": "error"
   },
   {
     "inputs": [],
-    "name": "AlreadySet",
+    "name": "CannotSelfTransfer",
     "type": "error"
   },
   {
@@ -42,6 +42,21 @@
   {
     "inputs": [],
     "name": "NotAllowedToSetSenders",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotProposedOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OnlyCallableByOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OwnerMustBeSet",
     "type": "error"
   },
   {
@@ -163,6 +178,19 @@
       }
     ],
     "name": "ConfigSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
+      }
+    ],
+    "name": "Initialized",
     "type": "event"
   },
   {
@@ -514,6 +542,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -620,11 +655,6 @@
         "internalType": "uint32",
         "name": "gasLimit",
         "type": "uint32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "gasPrice",
-        "type": "uint256"
       }
     ],
     "name": "sendRequest",
