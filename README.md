@@ -20,6 +20,10 @@ A frontend implementation using Next.js, enabling access to functions in a non-h
 
 Visit the README in these directories for more information.
 
+## Recommendations
+
+Please keep in mind that everything in this repository is intended for testing purposes. If you would like to test, and deploy your own contracts, **always use a separate wallet reserved for testing**.
+
 ## Contact
 
 If you have any questions, feel free to reach out to me on [Twitter](https://twitter.com/0xpolarzero) or by [email (0xpolarzero@gmail.com)](mailto:0xpolarzero@gmail.com).
