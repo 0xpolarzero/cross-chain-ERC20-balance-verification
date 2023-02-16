@@ -9,7 +9,7 @@ import "hardhat/console.sol";
 import "./Utils.sol";
 
 /**
- * @title Functions Copns contract
+ * @title Functions Consumer contract
  * @notice This contract is a demonstration of using Functions.
  * @notice NOT FOR PRODUCTION USE
  */
@@ -87,7 +87,7 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
     if (args.length < 2) revert MISSING_ARGS();
     req.addArgs(args);
 
-    bytes32 assignedReqID = sendRequest(req, subscriptionId, gasLimit, tx.gasprice);
+    bytes32 assignedReqID = sendRequest(req, subscriptionId, gasLimit);
     latestRequestId = assignedReqID;
 
     // Asociate the request ID with the user address, so we can retrieve it when fulfilling
@@ -109,7 +109,6 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
    * Either response or error parameter will be set, but never both
    */
   function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
-    // revert('test');
     latestResponse = response;
     latestError = err;
 

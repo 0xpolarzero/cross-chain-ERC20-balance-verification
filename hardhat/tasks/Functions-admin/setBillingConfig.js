@@ -8,8 +8,10 @@ task("functions-set-billing-config", "Sets the BillingRegistry config using valu
     }
 
     console.log("Setting registry configuration")
-    const registryFactory = await ethers.getContractFactory("FunctionsBillingRegistry")
-    const registry = registryFactory.attach(networkConfig[network.name]["functionsOracleRegistry"])
+    const registryFactory = await ethers.getContractFactory(
+      "contracts/dev/functions/FunctionsBillingRegistry.sol:FunctionsBillingRegistry"
+    )
+    const registry = registryFactory.attach(networkConfig[network.name]["functionsBillingRegistryProxy"])
     const billingConfig = require("../../" + taskArgs.configfile)["BillingRegistryConfig"]
 
     const setConfigTx = await registry.setConfig(
@@ -27,5 +29,4 @@ task("functions-set-billing-config", "Sets the BillingRegistry config using valu
     await setConfigTx.wait(VERIFICATION_BLOCK_CONFIRMATIONS)
 
     console.log("Registry configuration set")
-  }
-)
+  })

@@ -149,6 +149,7 @@ const request = async () => {
       gasLimit,
       overrides
     )
+
     // If a response is not received within 5 minutes, the request has failed
     setTimeout(
       () =>
