@@ -63,10 +63,8 @@ const CHAINS = [
  * @dev These can be customized with your own values
  */
 const config = {
-  contractAddress: '0x3700813aA6956BA06f5DEe33a0d9Eade89B9C18a',
-  // contractAddress: '0x2c197d3DA36C101D70D1086A70E47EA901a922bB',
-  subId: 96,
-  // subId: 99,
+  contractAddress: '0x44eD24C8c180234b7FF3c42D9C6f6420c57961e5',
+  subId: 11,
   network: { name: 'mumbai' },
   gasLimit: 100_000,
 
