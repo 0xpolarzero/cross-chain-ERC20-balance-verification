@@ -29,7 +29,7 @@ header .title {
   */
 main {
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto 1fr auto;
   grid-gap: 1rem;
   padding: 1rem 2rem;
 }

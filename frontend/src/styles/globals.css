@@ -232,6 +232,11 @@ a.emphasize.min:hover {
   text-align: justify;
 }
 
+.min {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
 /* 
  * Loader
  */
