@@ -37,7 +37,7 @@ const request = async () => {
   // Do it the ethers way, without hardhat
   const signer = getSigner()
   const clientContract = new ethers.Contract(contractAddress, functionsConsumerAbi, signer)
-  const oracle = new ethers.Contract(networkConfig[network.name]["functionsOracle"], functionsOracleAbi, signer)
+  const oracle = new ethers.Contract(networkConfig[network.name]["functionsOracleProxy"], functionsOracleAbi, signer)
   const registryAddress = await oracle.getRegistry()
   const registry = new ethers.Contract(registryAddress, functionsBillingRegistryAbi, signer)
 

@@ -51,7 +51,7 @@ const request = async (userAddress) => {
     signer,
   );
   const oracle = new ethers.Contract(
-    networkConfig[network.name]['functionsOracle'],
+    networkConfig[network.name]['functionsOracleProxy'],
     functionsOracleAbi,
     signer,
   );
