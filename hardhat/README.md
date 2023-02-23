@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project uses Chainlink Functions to retrieve the balance of an Ethereum address for an ERC20 token accross multiple blockchains. The aggregated balance is then brought back to the original chain to gate access to specific functions in the smart contract.
+This project uses Chainlink Functions to retrieve the balance of an Ethereum address for an ERC20 token across multiple blockchains. The aggregated balance is then brought back to the original chain to gate access to specific functions in the smart contract.
 
 Chainlink Functions Starter Kit: https://github.com/smartcontractkit/functions-hardhat-starter-kit
 

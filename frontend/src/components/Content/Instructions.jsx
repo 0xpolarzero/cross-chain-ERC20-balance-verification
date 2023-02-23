@@ -15,8 +15,8 @@ const Instructions = () => {
 
         <ol>
           <li>
-            <b>Connect your wallet</b> to the app and select the Polygon Mumbai
-            testnet.
+            <b>Connect your wallet</b> to the app and select the{' '}
+            <b>Polygon Mumbai</b> testnet.
           </li>
           <li>
             {' '}

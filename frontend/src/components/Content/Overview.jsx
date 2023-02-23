@@ -15,7 +15,7 @@ const Overview = () => {
           chain (Polygon Mumbai).
         </p>
         <p>
-          If they hold a sufficient combined balance accross multiple chains,
+          If they hold a sufficient combined balance across multiple chains,
           they can{' '}
           <b>request authorization to run specific functions on the contract</b>
           .
